@@ -12,7 +12,8 @@ namespace TheMagnificientTen
                 Console.Write("Enter task number (0 - if you want to exit) > ");
                 try 
                 {
-                    switch (Int32.Parse(Console.ReadLine()))
+                    int input = Functions.InputInt32();
+                    switch (input)
                     {
                         default: Console.WriteLine("You've entered non-existent task number."); break;
                         case 0: return;
@@ -82,14 +83,17 @@ namespace TheMagnificientTen
             Console.WriteLine("Task #6 - Font adjustment");
             
             (string, bool)[] settings = { ("Bold", false), ("Italic", false), ("Underline", false) };
-            int input;
             while (true)
             {
                 Console.WriteLine("Font parameters: " + Functions.Status(settings));
-                Console.WriteLine("Enter:\n1: bold\n2: italic\n3: underline");
-                input = Functions.InputInt32();
+                Console.WriteLine("Enter:\n0: exit\n1: bold\n2: italic\n3: underline");
+                int input = Functions.InputInt32();
+                
                 if (input == 0) break;
-                if (input < 4) settings[input - 1].Item2 = !settings[input].Item2;
+                if (input <= settings.Length)
+                {
+                    settings[input - 1].Item2 = !settings[input - 1].Item2;
+                }
             }
         }
 
@@ -99,9 +103,12 @@ namespace TheMagnificientTen
 
             int[] array = Functions.Generate1DArray(15, 1, 100);
             Functions.ShowArray(array);
+
             Console.WriteLine("Maximum element: {0} | Minimum element: {1}", Functions.GetMaxElement(array), Functions.GetMinElement(array));
+
             Console.WriteLine("Sorted ascending:");
             Functions.ShowArray(Functions.ArraySort(array, true));
+            
             Console.WriteLine("Sorted descending:");
             Functions.ShowArray(Functions.ArraySort(array, false));
         }
@@ -112,6 +119,7 @@ namespace TheMagnificientTen
 
             int[,,] array = Functions.Generate3DArray(5, 5, 5, -50, 51);
             Functions.ShowArray(array);
+
             array = Functions.ClearPositive(array);
             Console.WriteLine("Array with no positives:");
             Functions.ShowArray(array);

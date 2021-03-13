@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Общие сведения об этой сборке предоставляются следующим набором
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанные с этой сборкой.
-[assembly: AssemblyTitle("OkayOkayProgramming")]
+[assembly: AssemblyTitle("ExternalLibraryApplication")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OkayOkayProgramming")]
+[assembly: AssemblyProduct("ExternalLibraryApplication")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Следующий GUID представляет идентификатор typelib, если этот проект доступен из модели COM
-[assembly: Guid("cfff186d-12e4-4cc2-ba98-4a8e5c9d6edd")]
+[assembly: Guid("dcfcda24-143e-4fba-9f39-efd43c4e9dbd")]
 
 // Сведения о версии сборки состоят из указанных ниже четырех значений:
 //

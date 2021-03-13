@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CFFF186D-12E4-4CC2-BA98-4A8E5C9D6EDD}</ProjectGuid>
+    <ProjectGuid>{DCFCDA24-143E-4FBA-9F39-EFD43C4E9DBD}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>OkayOkayProgramming</RootNamespace>
-    <AssemblyName>OkayOkayProgramming</AssemblyName>
+    <RootNamespace>ExternalLibraryApplication</RootNamespace>
+    <AssemblyName>ExternalLibraryApplication</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MyTools">
+      <HintPath>..\..\MyTools\MyTools\bin\Debug\MyTools.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomString.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

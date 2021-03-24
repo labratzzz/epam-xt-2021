@@ -1,52 +1,124 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GameLib;
-
-namespace ConsoleGame
+﻿namespace ConsoleGame
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using GameLib;
+    
     class Program
     {
-        static int Height = 20;
-
-        static void Main(string[] args)
+        static void Main()
         {
-            int width = 20;
-            int height = 20;
+            InitializeConsole();
+            InitializeGame();
+            DrawBorder();
+            
+            Game.Start();
 
-            Console.WindowLeft = 0;
-            Console.WindowWidth = 25;
-            Console.WindowTop = 0;
-            Console.WindowHeight = 25;
-            Console.SetBufferSize(25, 25);
-            Game game = new Game(width, height);
-            game.GameUpdated += new GameUpdatedHandler(VisualiseFrame);
-            game.Start();
-
-            Console.ReadLine();
-        }
-
-        public static void VisualiseFrame(object game, EventArgs args)
-        {
-            Console.Clear();
-            var game_field = (game as Game).Field.Container;
-            foreach (var game_obj in game_field)
+            ConsoleKey pressedKey = default;
+            while (pressedKey != ConsoleKey.Escape && !Console.KeyAvailable)
             {
-                if (game_obj is Player) RenderObject(game_obj.Position, '&');
-                else if (game_obj is Enemy) RenderObject(game_obj.Position, '*');
-                else if (game_obj is Obstacle) RenderObject(game_obj.Position, '/');
-                else if (game_obj is Bonus) RenderObject(game_obj.Position, '+');
+                ConsoleKeyInfo key = Console.ReadKey(true);
+                pressedKey = key.Key;
+                switch (pressedKey)
+                {
+                    default: 
+                        break;
+                    case ConsoleKey.Escape: 
+                        return;
+                    case ConsoleKey.Spacebar: 
+                        Console.WriteLine((int)key.KeyChar); 
+                        break;
+                    case ConsoleKey.W: 
+                        Game.Player.CurrentDirection = Direction.Up; 
+                        break;
+                    case ConsoleKey.A: 
+                        Game.Player.CurrentDirection = Direction.Left; 
+                        break;
+                    case ConsoleKey.S: 
+                        Game.Player.CurrentDirection = Direction.Down; 
+                        break;
+                    case ConsoleKey.D: 
+                        Game.Player.CurrentDirection = Direction.Right;
+                        break;
+                }
             }
         }
 
-        public static Point ConvertToConsolePoint(Point value, int maxHeight) => new Point(value.X, maxHeight - value.Y);
+        static int Height = 20;
+        static int Width = 20;
+        static List<Point> LastPositions;
+        static List<GameObject> GameObjects;
+        static Game Game;
 
-        public static void RenderObject(Point position, char symbol)
+        public static void VisualiseFrame(object game, EventArgs args)
         {
-            Point console_point = ConvertToConsolePoint(position, 20);
-            Console.SetCursorPosition(console_point.X, console_point.Y);
+            //if (LastPositions is null) Console.Clear();
+            foreach (var position in LastPositions)
+            {
+                DrawChar(position, ' ');
+            }
+
+            LastPositions.Clear();
+            foreach (var gameObject in GameObjects)
+            {
+                if (gameObject is Player)
+                {
+                    DrawChar(gameObject.Position, '&');
+                }
+                else if (gameObject is Enemy)
+                {
+                    DrawChar(gameObject.Position, '*');
+                }
+                else if (gameObject is Obstacle)
+                {
+                    DrawChar(gameObject.Position, '/');
+                }
+                else if (gameObject is Bonus) DrawChar(gameObject.Position, '+');
+                
+                if (gameObject is IMovable) LastPositions.Add(gameObject.Position);
+            }
+
+        }
+        public static void InitializeConsole()
+        {
+            Console.Title = "Console Game";
+            Console.CursorVisible = false;
+            Console.OutputEncoding = Encoding.Unicode;
+
+            int windowWidth = Width + 5;
+            int windowHeight = Height + 5;
+            Console.SetWindowPosition(0, 0);
+            Console.SetWindowSize(windowWidth, windowHeight);
+            Console.SetBufferSize(windowWidth, windowHeight);
+        }
+        public static void InitializeGame()
+        {
+            LastPositions = new List<Point>();
+            Game = new Game(Width, Height);
+            GameObjects = Game.Field.Container;
+            Game.GameUpdated += new GameUpdatedHandler(VisualiseFrame);
+        }
+        public static void DrawBorder()
+        {
+            for (int i = 0; i < Width; i++)
+            {
+                Console.SetCursorPosition(i, Width);
+                Console.Write('═');
+            }
+            for (int i = 0; i < Height; i++)
+            {
+                Console.SetCursorPosition(Height, i);
+                Console.Write('║');
+            }
+            Console.SetCursorPosition(Width, Height);
+            Console.Write('╝');
+        }
+        public static Point ToConsolePoint(Point value, int maxHeight) => new Point(value.X, maxHeight - value.Y - 1);
+        public static void DrawChar(Point position, char symbol)
+        {
+            Point consolePoint = ToConsolePoint(position, Height);
+            Console.SetCursorPosition(consolePoint.X, consolePoint.Y);
             Console.Write(symbol);
         }
     }

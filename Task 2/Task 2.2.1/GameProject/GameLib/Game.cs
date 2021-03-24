@@ -1,89 +1,107 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-
-namespace GameLib
+﻿namespace GameLib
 {
-    public delegate void GameUpdatedHandler(object sender, EventArgs args);
+    using System;
+    using System.Collections.Generic;
+    using System.Timers;
 
+    public delegate void GameUpdatedHandler(object sender, EventArgs args);
+    
     public class Game
     {
-        private Timer Timer;
-        public GameField Field { get; }
-        public event GameUpdatedHandler GameUpdated;
-        public Player Player;
+        // Fields
+        private readonly Timer timer;
 
+        // Constructors
         public Game(int width, int height)
         {
-            Field = new GameField(width, height);
-            //Timer.Interval = 1000; //ms = 1s
-            Player = new Player(20) { Position = new Point(10, 10) };
+            this.Field = new GameField(width, height, this);
+            this.timer = new Timer(400); // ms = 0.4s 
+            this.timer.Elapsed += new ElapsedEventHandler(this.NextFrame);
+            this.Player = new Player(new Point(10, 10), this.Field, 100);
+            this.Player.MovedOutOfBounds += new OutOfBoundsHandler(this.OnObjectMovedOutOfBounds);
         }
 
+        // Events
+        public event GameUpdatedHandler GameUpdated;
+
+        // Properties
+        public GameField Field { get; }
+
+        public Player Player { get; set; }
+
+        // Methods
         public void Start()
         {
-            //Field.Container.Add();
-            Field.Container.Add(Player);
-            Timer = new Timer(NextFrame, null, 0, 1000);
-        }
-
-        //private Place<>
-
-        //or Step()
-        private void NextFrame(object sender)
-        {
-            foreach (var obj in Field.Container)
-            {
-                if (obj is IMovable) (obj as IMovable).Move();
-            }
-
-            GameUpdated?.Invoke(this, new EventArgs());
-            //call Move() method of all movable objects
-            //move method returns new position of an object
-            //search new position in positions of all objects
-            //if a match founded - raise Contact event
+            this.timer.Start();
         }
 
         public void Pause()
         {
-            //Timer.Stop();
+            this.timer.Stop();
         }
 
-        public void Stop() 
+        private void NextFrame(object sender, ElapsedEventArgs args)
         {
+            var gamefield = this.Field.Container;
+            foreach (var obj in gamefield)
+            {
+                if (obj is IMovable)
+                {
+                    (obj as IMovable).Move();
+                }
+            }
+
+            this.GameUpdated?.Invoke(this, new EventArgs());
+        }
+
+        private void OnObjectContact(object sender, ContactEventArgs args)
+        { 
         
+        }
+
+        private void OnObjectMovedOutOfBounds(object sender, OutOfBoundsEventArgs args)
+        {
+            (sender as GameObject).Position = args.PreviousPosition;
         }
     }
 
     public class GameField
     {
-        private int width;
-        private int height;
-        public int Width
+        // Constructors
+        public GameField(int width, int height, Game game, bool detectMovingOutOfBounds = true)
         {
-            get => width;
-            set => width = (value > 5) ? value : throw new ArgumentException();
-        }
-        public int Height
-        {
-            get => height;
-            set => height = (value > 5) ? value : throw new ArgumentException();
+            this.LeftBound = 0;
+            this.BottomBound = 0;
+
+            this.Width = width;
+            this.Height = height;
+            this.MaxObjectsCount = width * height;
+            this.Container = new List<GameObject>();
+            this.Game = game;
+            this.DetectMovingOutOfBounds = detectMovingOutOfBounds;
         }
 
-        public int MaxObjectsCount { get; set; }
-        private List<GameObject> container;
-        public List<GameObject> Container
+        // Properties
+        public int LeftBound { get; protected set; }
+
+        public int BottomBound { get; protected set; }
+
+        public int Width { get; protected set; }
+
+        public int Height { get; protected set; }
+
+        public int MaxObjectsCount { get; protected set; }
+
+        public List<GameObject> Container { get; protected set; }
+
+        public bool DetectMovingOutOfBounds { get; protected set; }
+
+        public Game Game { get; protected set; }
+
+        // Methods
+        public void Add(GameObject gameObject)
         {
-            get => container;
-            set => container = (value.Count <= MaxObjectsCount) ? value : throw new ArgumentException();
-        }
-        
-        public GameField(int width, int height)
-        {
-            Width = width;
-            Height = height;
-            MaxObjectsCount = width * height;
-            Container = new List<GameObject>();
+           
         }
     }
 }

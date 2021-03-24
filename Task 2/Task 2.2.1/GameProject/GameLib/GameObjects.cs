@@ -1,110 +1,240 @@
-﻿using System.Collections.Generic;
-
-namespace GameLib
+﻿namespace GameLib
 {
-    public class GameObject
+    using System.Collections.Generic;
+
+    // Abstract classes
+    public abstract class GameObject
     {
+        // Constructors
+        protected GameObject(Point position, GameField field)
+        {
+            this.Position = position;
+            this.Field = field;
+        }
+        
+        // Properties
         public Point Position { get; set; }
+
         protected GameField Field { get; set; }
     }
 
-    public class Enemy : GameObject, IMovable
+    // Classes
+    public class Enemy : GameObject, IComputedMovable
     {
-        public int Damage { get; set; }
-        public MovementAlgorithm Algorithm { get; set; }
-        public bool HasMadeMovementDecision { get; set; }
-        public event ContactHandler Contacted;
-
-        public void Move()
+        // Constructors
+        public Enemy(Point position, GameField field) : base(position, field)
         {
-            Point NewPosition = Algorithm.GetNextPosition(Position);
 
-            if (NewPosition.X >= Field.Width) NewPosition.X = Field.Width - 1;
-            if (NewPosition.X < 0) NewPosition.X = 0;
-            if (NewPosition.Y >= Field.Height) NewPosition.Y = Field.Height - 1;
-            if (NewPosition.Y < 0) NewPosition.Y = 0;
-
-            Position = NewPosition;
-
-            foreach (var GameObject in Field.Container)
-            {
-                List<GameObject> contacted_with = new List<GameObject>();
-                if (this.Position == GameObject.Position)
-                {
-                    if (GameObject is IMovable && (GameObject as IMovable).HasMadeMovementDecision == false) continue;
-                    contacted_with.Add(GameObject);
-                }
-                Contacted?.Invoke(this, new ContactEventArgs(contacted_with));
-            }
-
-            HasMadeMovementDecision = true;
         }
 
+        #region IComputedMovable implementation
+        // Events
+        public event ContactHandler Contacted;
+
+        public event OutOfBoundsHandler MovedOutOfBounds;
+
+        // Properties
+        public bool HasMadeMovementDecision { get; set; }
+
+        public MovementAlgorithm Algorithm { get; set; }
+
+        // Methods
+        public void Move()
+        {
+            Point previousPosition = this.Position;
+
+            Point newPosition = this.Algorithm.GetNextPosition(Position);
+            this.Position = newPosition;
+
+            if (this.Field.DetectMovingOutOfBounds)
+            {
+                this.CheckUpForOutOfBounds(previousPosition);
+            }
+
+            this.CheckUpForContacts();
+
+            this.HasMadeMovementDecision = true;
+        }
+
+        protected void CheckUpForOutOfBounds(Point previousPosition)
+        {
+            if (this.Position.X < this.Field.LeftBound)
+            {
+                OutOfBoundsEventArgs eventArgs = new OutOfBoundsEventArgs(previousPosition, Sides.Left);
+                this.MovedOutOfBounds?.Invoke(this, eventArgs);
+            }
+            else if (this.Position.X >= this.Field.Width)
+            {
+                OutOfBoundsEventArgs eventArgs = new OutOfBoundsEventArgs(previousPosition, Sides.Right);
+                this.MovedOutOfBounds?.Invoke(this, eventArgs);
+            }
+            else if (this.Position.Y < this.Field.BottomBound)
+            {
+                OutOfBoundsEventArgs eventArgs = new OutOfBoundsEventArgs(previousPosition, Sides.Bottom);
+                this.MovedOutOfBounds?.Invoke(this, eventArgs);
+            }
+            else if (this.Position.Y >= this.Field.Height)
+            {
+                OutOfBoundsEventArgs eventArgs = new OutOfBoundsEventArgs(previousPosition, Sides.Top);
+                this.MovedOutOfBounds?.Invoke(this, eventArgs);
+            }
+        }
+
+        protected void CheckUpForContacts()
+        {
+            foreach (var gameObject in this.Field.Container)
+            {
+                List<GameObject> contactedWith = new List<GameObject>();
+                if (this.Position == gameObject.Position)
+                {
+                    if (gameObject is IMovable && !(gameObject as IMovable).HasMadeMovementDecision)
+                    {
+                        continue;
+                    }
+
+                    contactedWith.Add(gameObject);
+                }
+
+                if (contactedWith.Count != 0)
+                {
+                    this.Contacted?.Invoke(this, new ContactEventArgs(contactedWith));
+                }
+            }
+        }
+        #endregion
+
+        // Propeties
+        public int Damage { get; set; }
+
+        // Methods
         public void Hurt(Player player)
         {
-            player.HealthPoints -= Damage;
+            player.HealthPoints -= this.Damage;
         }
     }
 
-    public class Player : GameObject, IMovable
+    public class Player : GameObject, IControlledMovable
     {
-        public Player(int health_points)
+        // Constructors
+        public Player(Point position, GameField field, int healthPoints) : base(position, field)
         {
-            HealthPoints = health_points;
-            CurrentDirection = Direction.Up;
+            this.HealthPoints = healthPoints;
+            this.CurrentDirection = Direction.Up;
+            this.Step = 1;
         }
-        public int HealthPoints { get; set; }
-        public Direction CurrentDirection { get; set; }
-        public int Step { get; set; }
-        public bool HasMadeMovementDecision { get; set; }
+
+        #region IControlledMovable implementation
+        // Events
         public event ContactHandler Contacted;
 
+        public event OutOfBoundsHandler MovedOutOfBounds;
+
+        // Properties
+        public bool HasMadeMovementDecision { get; set; }
+
+        public Direction CurrentDirection { get; set; }
+
+        public int Step { get; set; }
+
+        // Methods
         public void Move()
         {
-            Point NewPosition = Position;
-
-            switch (CurrentDirection)
+            Point previousPosition = this.Position;
+            
+            Point newPosition = this.Position;
+            switch (this.CurrentDirection)
             {
                 default:
                     break;
                 case Direction.Up:
-                    NewPosition.Y = (Position.Y + Step >= Field.Height) ? 0 : Step;
+                    newPosition.Y += this.Step;
                     break;
                 case Direction.Down:
-                    NewPosition.Y = (Position.Y - Step >= Field.Height) ? 0 : Step;
-                    break;
-                case Direction.Left:
-                    NewPosition.X = (Position.X - Step >= Field.Height) ? 0 : Step;
+                    newPosition.Y -= this.Step;
                     break;
                 case Direction.Right:
-                    NewPosition.X = (Position.X + Step >= Field.Height) ? 0 : Step;
+                    newPosition.X += this.Step;
+                    break;
+                case Direction.Left:
+                    newPosition.X -= this.Step;
                     break;
             }
 
-            Position = NewPosition;
+            this.Position = newPosition;
 
-            foreach (var GameObject in Field.Container)
+            if (this.Field.DetectMovingOutOfBounds)
             {
-                List<GameObject> contacted_with = new List<GameObject>();
-                if (this.Position == GameObject.Position)
-                {
-                    if (GameObject is IMovable && (GameObject as IMovable).HasMadeMovementDecision == false) continue;
-                    contacted_with.Add(GameObject);
-                }
-                Contacted?.Invoke(this, new ContactEventArgs(contacted_with));
+                this.CheckUpForOutOfBounds(previousPosition);
             }
 
-            HasMadeMovementDecision = true;
+            this.CheckUpForContacts();
+
+            this.HasMadeMovementDecision = true;
         }
+
+        protected void CheckUpForOutOfBounds(Point previousPosition)
+        {
+            if (this.Position.X < this.Field.LeftBound)
+            {
+                OutOfBoundsEventArgs eventArgs = new OutOfBoundsEventArgs(previousPosition, Sides.Left);
+                this.MovedOutOfBounds?.Invoke(this, eventArgs);
+            }
+            else if (this.Position.X >= this.Field.Width)
+            {
+                OutOfBoundsEventArgs eventArgs = new OutOfBoundsEventArgs(previousPosition, Sides.Right);
+                this.MovedOutOfBounds?.Invoke(this, eventArgs);
+            }
+            else if (this.Position.Y < this.Field.BottomBound)
+            {
+                OutOfBoundsEventArgs eventArgs = new OutOfBoundsEventArgs(previousPosition, Sides.Bottom);
+                this.MovedOutOfBounds?.Invoke(this, eventArgs);
+            }
+            else if (this.Position.Y >= this.Field.Height)
+            {
+                OutOfBoundsEventArgs eventArgs = new OutOfBoundsEventArgs(previousPosition, Sides.Top);
+                this.MovedOutOfBounds?.Invoke(this, eventArgs);
+            }
+        }
+
+        protected void CheckUpForContacts()
+        {
+            foreach (var gameObject in this.Field.Container)
+            {
+                List<GameObject> contactedWith = new List<GameObject>();
+                if (this.Position == gameObject.Position)
+                {
+                    if (gameObject is IMovable && !(gameObject as IMovable).HasMadeMovementDecision)
+                    {
+                        continue;
+                    }
+
+                    contactedWith.Add(gameObject);
+                }
+
+                if (contactedWith.Count != 0) this.Contacted?.Invoke(this, new ContactEventArgs(contactedWith));
+            }
+        }
+        #endregion
+
+        // Properties
+        public int HealthPoints { get; set; }
     }
 
     public class Bonus : GameObject
     {
+        // Constructors
+        public Bonus(Point position, GameField field) : base(position, field)
+        {
 
+        }
     }
 
     public class Obstacle : GameObject
     {
+        // Constructors
+        public Obstacle(Point position, GameField field) : base(position, field)
+        {
 
+        }
     }
 }

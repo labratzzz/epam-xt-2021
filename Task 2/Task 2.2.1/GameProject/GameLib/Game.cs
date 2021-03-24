@@ -17,8 +17,6 @@
             this.Field = new GameField(width, height, this);
             this.timer = new Timer(400); // ms = 0.4s 
             this.timer.Elapsed += new ElapsedEventHandler(this.NextFrame);
-            this.Player = new Player(new Point(10, 10), this.Field, 100);
-            this.Player.MovedOutOfBounds += new OutOfBoundsHandler(this.OnObjectMovedOutOfBounds);
         }
 
         // Events
@@ -40,14 +38,47 @@
             this.timer.Stop();
         }
 
+        public void Reset()
+        {
+            this.Field.Container.Clear();
+
+            this.Player = new Hero(new Point(10, 10));
+            this.Player.Field = this.Field;
+            this.Field.Add(Player);
+
+            int enemiesCount = 15;
+            int obstaclesCount = 20;
+            Random random = new Random();
+
+            for (int i = 0; i < enemiesCount; i++)
+            {
+                var enemy = new RegularEnemy(new Point(random.Next(this.Field.LeftBound, this.Field.Width), random.Next(this.Field.BottomBound, this.Field.Height)));
+                enemy.Field = this.Field;
+                this.Field.Add(enemy);
+            }
+            for (int i = 0; i < obstaclesCount; i++)
+            {
+                var obstacle = new Wall(new Point(random.Next(this.Field.LeftBound, this.Field.Width), random.Next(this.Field.BottomBound, this.Field.Height)));
+                obstacle.Field = this.Field;
+                this.Field.Add(obstacle);
+            }
+            foreach (var gameObject in this.Field.Container)
+            {
+                if (gameObject is IMovable movableGameObject)
+                {
+                    movableGameObject.MovedOutOfBounds += new OutOfBoundsHandler(this.OnObjectMovedOutOfBounds);
+                    movableGameObject.Contacted += new ContactHandler(this.OnObjectContact);
+                }
+            }
+        }
+
         private void NextFrame(object sender, ElapsedEventArgs args)
         {
-            var gamefield = this.Field.Container;
-            foreach (var obj in gamefield)
+            foreach (var gameObject in this.Field.Container)
             {
-                if (obj is IMovable)
+                if (gameObject is IMovable movableGameObject)
                 {
-                    (obj as IMovable).Move();
+                    movableGameObject.Move();
                 }
             }
 
@@ -55,8 +86,8 @@
         }
 
         private void OnObjectContact(object sender, ContactEventArgs args)
-        { 
-        
+        {
+            //Console.Beep();
         }
 
         private void OnObjectMovedOutOfBounds(object sender, OutOfBoundsEventArgs args)
@@ -101,7 +132,7 @@
         // Methods
         public void Add(GameObject gameObject)
         {
-           
+            this.Container.Add(gameObject);
         }
     }
 }

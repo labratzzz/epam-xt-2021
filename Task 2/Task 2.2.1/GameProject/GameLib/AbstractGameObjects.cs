@@ -6,26 +6,22 @@
     public abstract class GameObject
     {
         // Constructors
-        protected GameObject(Point position, GameField field)
+        protected GameObject(Point position)
         {
             this.Position = position;
-            this.Field = field;
         }
         
         // Properties
         public Point Position { get; set; }
 
-        protected GameField Field { get; set; }
+        public GameField Field { get; set; }
     }
 
     // Classes
-    public class Enemy : GameObject, IComputedMovable
+    public abstract class Enemy : GameObject, IComputedMovable, IMovable
     {
         // Constructors
-        public Enemy(Point position, GameField field) : base(position, field)
-        {
-
-        }
+        protected Enemy(Point position) : base(position) { }
 
         #region IComputedMovable implementation
         // Events
@@ -113,13 +109,11 @@
         }
     }
 
-    public class Player : GameObject, IControlledMovable
+    public abstract class Player : GameObject, IControlledMovable, IMovable
     {
         // Constructors
-        public Player(Point position, GameField field, int healthPoints) : base(position, field)
+        protected Player(Point position) : base(position)
         {
-            this.HealthPoints = healthPoints;
-            this.CurrentDirection = Direction.Up;
             this.Step = 1;
         }
 
@@ -220,21 +214,18 @@
         public int HealthPoints { get; set; }
     }
 
-    public class Bonus : GameObject
+    public abstract class Bonus : GameObject
     {
         // Constructors
-        public Bonus(Point position, GameField field) : base(position, field)
+        protected Bonus(Point position) : base(position)
         {
 
         }
     }
 
-    public class Obstacle : GameObject
+    public abstract class Obstacle : GameObject
     {
         // Constructors
-        public Obstacle(Point position, GameField field) : base(position, field)
-        {
-
-        }
+        protected Obstacle(Point position) : base(position) { }
     }
 }

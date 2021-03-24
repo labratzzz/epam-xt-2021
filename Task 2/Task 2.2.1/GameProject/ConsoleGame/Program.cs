@@ -4,16 +4,17 @@
     using System.Collections.Generic;
     using System.Text;
     using GameLib;
-    
-    class Program
+
+    internal static class Program
     {
-        static void Main()
+        // Entry point
+        private static void Main()
         {
             InitializeConsole();
             InitializeGame();
             DrawBorder();
             
-            Game.Start();
+            game.Start();
 
             ConsoleKey pressedKey = default;
             while (pressedKey != ConsoleKey.Escape && !Console.KeyAvailable)
@@ -30,37 +31,42 @@
                         Console.WriteLine((int)key.KeyChar); 
                         break;
                     case ConsoleKey.W: 
-                        Game.Player.CurrentDirection = Direction.Up; 
+                        game.Player.CurrentDirection = Direction.Up; 
                         break;
                     case ConsoleKey.A: 
-                        Game.Player.CurrentDirection = Direction.Left; 
+                        game.Player.CurrentDirection = Direction.Left; 
                         break;
                     case ConsoleKey.S: 
-                        Game.Player.CurrentDirection = Direction.Down; 
+                        game.Player.CurrentDirection = Direction.Down; 
                         break;
                     case ConsoleKey.D: 
-                        Game.Player.CurrentDirection = Direction.Right;
+                        game.Player.CurrentDirection = Direction.Right;
                         break;
                 }
             }
         }
 
-        static int Height = 20;
-        static int Width = 20;
-        static List<Point> LastPositions;
-        static List<GameObject> GameObjects;
-        static Game Game;
+        // Fields
+        private static int height = 20;
 
+        private static int width = 20;
+
+        private static List<Point> lastPositions;
+
+        private static List<GameObject> gameObjects;
+
+        private static Game game;
+
+        // Methods
         public static void VisualiseFrame(object game, EventArgs args)
         {
-            //if (LastPositions is null) Console.Clear();
-            foreach (var position in LastPositions)
+            foreach (var position in lastPositions)
             {
                 DrawChar(position, ' ');
             }
 
-            LastPositions.Clear();
-            foreach (var gameObject in GameObjects)
+            lastPositions.Clear();
+            foreach (var gameObject in gameObjects)
             {
                 if (gameObject is Player)
                 {
@@ -74,50 +80,63 @@
                 {
                     DrawChar(gameObject.Position, '/');
                 }
-                else if (gameObject is Bonus) DrawChar(gameObject.Position, '+');
-                
-                if (gameObject is IMovable) LastPositions.Add(gameObject.Position);
-            }
+                else if (gameObject is Bonus)
+                {
+                    DrawChar(gameObject.Position, '+');
+                }
 
+                if (gameObject is IMovable)
+                {
+                    lastPositions.Add(gameObject.Position);
+                }
+            }
         }
+
         public static void InitializeConsole()
         {
             Console.Title = "Console Game";
             Console.CursorVisible = false;
             Console.OutputEncoding = Encoding.Unicode;
 
-            int windowWidth = Width + 5;
-            int windowHeight = Height + 5;
+            int windowWidth = width + 5;
+            int windowHeight = height + 5;
             Console.SetWindowPosition(0, 0);
             Console.SetWindowSize(windowWidth, windowHeight);
             Console.SetBufferSize(windowWidth, windowHeight);
         }
+
         public static void InitializeGame()
         {
-            LastPositions = new List<Point>();
-            Game = new Game(Width, Height);
-            GameObjects = Game.Field.Container;
-            Game.GameUpdated += new GameUpdatedHandler(VisualiseFrame);
+            lastPositions = new List<Point>();
+            game = new Game(width, height);
+            game.Reset();
+            gameObjects = game.Field.Container;
+            game.GameUpdated += new GameUpdatedHandler(VisualiseFrame);
         }
+
         public static void DrawBorder()
         {
-            for (int i = 0; i < Width; i++)
+            for (int i = 0; i < width; i++)
             {
-                Console.SetCursorPosition(i, Width);
+                Console.SetCursorPosition(i, width);
                 Console.Write('═');
             }
-            for (int i = 0; i < Height; i++)
+
+            for (int i = 0; i < height; i++)
             {
-                Console.SetCursorPosition(Height, i);
+                Console.SetCursorPosition(height, i);
                 Console.Write('║');
             }
-            Console.SetCursorPosition(Width, Height);
+
+            Console.SetCursorPosition(width, height);
             Console.Write('╝');
         }
+
         public static Point ToConsolePoint(Point value, int maxHeight) => new Point(value.X, maxHeight - value.Y - 1);
+
         public static void DrawChar(Point position, char symbol)
         {
-            Point consolePoint = ToConsolePoint(position, Height);
+            Point consolePoint = ToConsolePoint(position, height);
             Console.SetCursorPosition(consolePoint.X, consolePoint.Y);
             Console.Write(symbol);
         }

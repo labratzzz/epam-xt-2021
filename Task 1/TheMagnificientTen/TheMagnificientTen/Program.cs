@@ -1,12 +1,13 @@
-﻿using System;
-
-namespace TheMagnificientTen
+﻿namespace TheMagnificentTen
 {
-    class Program
+    using System;
+
+    public static class Program
     {
-        static void Main(string[] args)
+        // Entry point
+        public static void Main(string[] args)
         {
-            Console.WriteLine("1.1 - The Magnificient Ten");
+            Console.WriteLine("1.1 - The Magnificent Ten");
             while (true)
             {
                 Console.Write("Enter task number (0 - if you want to exit) > ");
@@ -15,25 +16,53 @@ namespace TheMagnificientTen
                     int input = Functions.InputInt32();
                     switch (input)
                     {
-                        default: Console.WriteLine("You've entered non-existent task number."); break;
-                        case 0: return;
-                        case 1: Program1(); break;
-                        case 2: Program2(); break;
-                        case 3: Program3(); break;
-                        case 4: Program4(); break;
-                        case 5: Program5(); break;
-                        case 6: Program6(); break;
-                        case 7: Program7(); break;
-                        case 8: Program8(); break;
-                        case 9: Program9(); break;
-                        case 10: Program10(); break;
+                        default: 
+                            Console.WriteLine("You've entered non-existent task number.");
+                            break;
+                        case 0: 
+                            return;
+                        case 1: 
+                            Program1(); 
+                            break;
+                        case 2: 
+                            Program2(); 
+                            break;
+                        case 3: 
+                            Program3(); 
+                            break;
+                        case 4: 
+                            Program4(); 
+                            break;
+                        case 5: 
+                            Program5(); 
+                            break;
+                        case 6: 
+                            Program6(); 
+                            break;
+                        case 7: 
+                            Program7(); 
+                            break;
+                        case 8: 
+                            Program8(); 
+                            break;
+                        case 9: 
+                            Program9(); 
+                            break;
+                        case 10: 
+                            Program10(); 
+                            break;
                     }
+
                     Console.WriteLine();
                 }
-                catch (Exception e) { Console.WriteLine("An error occured: {0}", e.Message); }
+                catch (Exception e) 
+                {
+                    Console.WriteLine("An error occurred: {0}", e.Message);
+                }
             }
         }
 
+        // Methods
         public static void Program1()
         {
             Console.WriteLine("Task #1 - Rectangle");
@@ -44,7 +73,7 @@ namespace TheMagnificientTen
             Console.Write("Enter side b > ");
             b = Functions.InputInt32();
 
-            Console.WriteLine("Square of given rectagle = {0}", Functions.RectangleSqaure(a, b));
+            Console.WriteLine("Square of given rectangle = {0}", Functions.RectangleSqaure(a, b));
         }
 
         public static void Program2()
@@ -82,7 +111,12 @@ namespace TheMagnificientTen
         {
             Console.WriteLine("Task #6 - Font adjustment");
             
-            (string, bool)[] settings = { ("Bold", false), ("Italic", false), ("Underline", false) };
+            (string, bool)[] settings = 
+                { 
+                ("Bold", false),
+                ("Italic", false),
+                ("Underline", false)
+                };
             while (true)
             {
                 Console.WriteLine("Font parameters: " + Functions.Status(settings));

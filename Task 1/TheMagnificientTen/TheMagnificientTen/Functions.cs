@@ -1,10 +1,13 @@
-﻿using System;
-
-namespace TheMagnificientTen
+﻿namespace TheMagnificentTen
 {
-    static class Functions
+    using System;
+
+    public static class Functions
     {
+        // Properties
         public static char Symb { get; set; } = '*';
+        
+        // Methods
         public static int RectangleSqaure(int a, int b)
         {
             if (a <= 0 || b <= 0) throw new ArgumentException("Given arguments must be greater than zero");
@@ -12,11 +15,12 @@ namespace TheMagnificientTen
             return a * b;
         }
 
-        public static int SumOfNumbers(int limit, params int[] checkup_numbers)
+        public static int SumOfNumbers(int limit, params int[] checkupNumbers)
         {
             if (limit <= 0) throw new ArgumentException("This param must be greater than zero", "limit");
-            if (checkup_numbers.Length == 0) throw new ArgumentException("At least one number must be specified", "numbers");
-            foreach (int number in checkup_numbers)
+            if (checkupNumbers.Length == 0) throw new ArgumentException("At least one number must be specified", "numbers");
+
+            foreach (int number in checkupNumbers)
             {
                 if (number <= 0) throw new ArgumentException("This param must be greater than zero", "numbers");
             }
@@ -26,7 +30,7 @@ namespace TheMagnificientTen
             {
                 checked
                 {
-                    foreach (int checkup in checkup_numbers)
+                    foreach (int checkup in checkupNumbers)
                     {
                         if (number % checkup == 0)
                         {
@@ -36,6 +40,7 @@ namespace TheMagnificientTen
                     }
                 }
             }
+
             return result;
         }
 
@@ -49,6 +54,7 @@ namespace TheMagnificientTen
                 {
                     Console.Write(Symb);
                 }
+
                 Console.WriteLine();
             }
         }
@@ -65,10 +71,12 @@ namespace TheMagnificientTen
                 {
                     Console.Write(' ');
                 }
+
                 for (int symbWrite = 0; symbWrite < 1 + (line * gainSymbPerLine); symbWrite++)
                 {
                     Console.Write(Symb);
                 }
+
                 Console.WriteLine();
             }
         }
@@ -109,42 +117,42 @@ namespace TheMagnificientTen
             return min;
         }
 
-        public static int[] Generate1DArray(int length, int min_limit, int max_limit)
+        public static int[] Generate1DArray(int length, int minLimit, int maxLimit)
         {
             Random r = new Random();
             int[] array = new int[length];
             for (int d1 = 0; d1 < length; d1++)
             {
-                array[d1] = r.Next(min_limit, max_limit);
+                array[d1] = r.Next(minLimit, maxLimit);
             }
             return array;
         }
 
-        public static int[,] Generate2DArray(int dimension_1, int dimension_2, int min_limit, int max_limit)
+        public static int[,] Generate2DArray(int dimension1, int dimension2, int minLimit, int maxLimit)
         {
             Random r = new Random();
-            int[,] array = new int[dimension_1, dimension_2];
-            for (int d1 = 0; d1 < dimension_1; d1++)
+            int[,] array = new int[dimension1, dimension2];
+            for (int d1 = 0; d1 < dimension1; d1++)
             {
-                for (int d2 = 0; d2 < dimension_2; d2++)
+                for (int d2 = 0; d2 < dimension2; d2++)
                 {
-                    array[d1, d2] = r.Next(min_limit, max_limit);
+                    array[d1, d2] = r.Next(minLimit, maxLimit);
                 }
             }
             return array;
         }
 
-        public static int[,,] Generate3DArray(int dimension_1, int dimension_2, int dimension_3, int min_limit, int max_limit)
+        public static int[,,] Generate3DArray(int dimension1, int dimension2, int dimension3, int minLimit, int maxLimit)
         {
             Random r = new Random();
-            int[,,] array = new int[dimension_1, dimension_2, dimension_3];
-            for (int d1 = 0; d1 < dimension_1; d1++)
+            int[,,] array = new int[dimension1, dimension2, dimension3];
+            for (int d1 = 0; d1 < dimension1; d1++)
             {
-                for (int d2 = 0; d2 < dimension_2; d2++)
+                for (int d2 = 0; d2 < dimension2; d2++)
                 {
-                    for (int d3 = 0; d3 < dimension_3; d3++)
+                    for (int d3 = 0; d3 < dimension3; d3++)
                     {
-                        array[d1, d2, d3] = r.Next(min_limit, max_limit);
+                        array[d1, d2, d3] = r.Next(minLimit, maxLimit);
                     }
                 }
             }
@@ -193,7 +201,10 @@ namespace TheMagnificientTen
                 for (int j = 1; j < array.Length - i; j++)
                 {
                     bool check = array[j] < array[j - 1];
-                    if (!ascending) check = !check;
+                    if (!ascending)
+                    {
+                        check = !check;
+                    }
                     if (check)
                     {
                         int swap = array[j];
@@ -271,7 +282,7 @@ namespace TheMagnificientTen
                     status += parameters[i].Item1 + ", ";
                 }
             }
-            return (string.IsNullOrEmpty(status)) ? "None" : status; 
+            return string.IsNullOrEmpty(status) ? "None" : status; 
         }
     }
 }

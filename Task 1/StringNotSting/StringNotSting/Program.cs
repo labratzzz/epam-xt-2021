@@ -1,10 +1,11 @@
-﻿using System;
-
-namespace StringNotSting
+﻿namespace StringNotSting
 {
-    class Program
+    using System;
+
+    public static class Program
     {
-        static void Main(string[] args)
+        // Entry point
+        public static void Main(string[] args)
         {
             Console.WriteLine("1.2 - String not Sting");
             while (true)
@@ -12,21 +13,38 @@ namespace StringNotSting
                 Console.Write("Enter task number (0 - if you want to exit) > ");
                 try
                 {
-                    switch (Int32.Parse(Console.ReadLine()))
+                    int input = Functions.InputInt32();
+                    switch (input)
                     {
-                        default: Console.WriteLine("You've entered non-existent task number."); break;
-                        case 0: return;
-                        case 1: Program1(); break;
-                        case 2: Program2(); break;
-                        case 3: Program3(); break;
-                        case 4: Program4(); break;
+                        default: 
+                            Console.WriteLine("You've entered non-existent task number."); 
+                            break;
+                        case 0:
+                            return;
+                        case 1:
+                            Program1();
+                            break;
+                        case 2:
+                            Program2();
+                            break;
+                        case 3:
+                            Program3();
+                            break;
+                        case 4:
+                            Program4();
+                            break;
                     }
+
                     Console.WriteLine();
                 }
-                catch (Exception e) { Console.WriteLine("An error occured: {0}", e.Message); }
+                catch (Exception e)
+                { 
+                    Console.WriteLine("An error occurred: {0}", e.Message);
+                }
             }
         }
 
+        // Methods
         public static void Program1()
         {
             Console.WriteLine("Task #1 - Averages");

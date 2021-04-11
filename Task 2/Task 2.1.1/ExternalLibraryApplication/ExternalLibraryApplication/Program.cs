@@ -1,11 +1,12 @@
-﻿using System;
-using MyTools;
-
-namespace ExternalLibraryApplication
+﻿namespace ExternalLibraryApplication
 {
-    class Program
+    using System;
+    using System.Text;
+    using MyTools;
+
+    public static class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Console.WriteLine("Some functionality demo");
 
@@ -50,6 +51,42 @@ namespace ExternalLibraryApplication
 
             Console.WriteLine("world.Insert(2, new CustomString(\"[INSERT]\")) = \"{0}\"", world.Insert(2, new CustomString("[INSERT]")));
             Console.WriteLine("world.Insert(5, \"[INSERT]\") = \"{0}\"", world.Insert(5, "[INSERT]"));
+
+            Console.WriteLine();
+            Console.WriteLine(new string('-', 20));
+            Console.WriteLine("NEW FUNCTIONALITY");
+            Console.WriteLine();
+
+            char[] charArray = new char[] { 'W', 'h', 'a', 't', '\'', 's', ' ', 'u', 'p', '?' };
+            CustomString newcs1 = new CustomString(charArray);
+            CustomString newcs2 = (CustomString)charArray;
+
+            Console.WriteLine("{0} {1} = new {0} {2}", "char[]", nameof(charArray), Program.DisplayInBrackets(charArray));
+
+            Console.WriteLine();
+
+            Console.WriteLine("{0} {1} = new {0}({2})", newcs1.GetType(), nameof(newcs1), nameof(charArray));
+            Console.WriteLine("{0} = {1}", nameof(newcs1), newcs1);
+            
+            Console.WriteLine();
+
+            Console.WriteLine("{0} {1} = ({0}){2}", newcs2.GetType(), nameof(newcs2), nameof(charArray));
+            Console.WriteLine("{0} = {1}", nameof(newcs2), newcs2);
+        }
+
+        public static string DisplayInBrackets(char[] charArray)
+        {
+            StringBuilder result = new StringBuilder("{ ");
+
+            int lastElement = charArray.Length - 1;
+            for (int i = 0; i < lastElement; i++)
+            {
+                result.AppendFormat("'{0}', ", charArray[i]);
+            }
+
+            result.AppendFormat("{0} }}", lastElement);
+            
+            return result.ToString();
         }
     }
 }

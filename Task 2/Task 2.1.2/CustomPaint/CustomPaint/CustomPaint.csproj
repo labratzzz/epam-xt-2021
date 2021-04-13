@@ -43,10 +43,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Figures.cs" />
+    <Compile Include="Additional Tools\Actions.cs" />
+    <Compile Include="Additional Tools\ConsoleExtensions.cs" />
+    <Compile Include="Figures\Circle.cs" />
+    <Compile Include="Figures\Figure.cs" />
+    <Compile Include="Figures\Point.cs" />
+    <Compile Include="Figures\LineSegment.cs" />
+    <Compile Include="Additional Tools\FigureTypes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tools.cs" />
+    <Compile Include="Figures\Rectangle.cs" />
+    <Compile Include="Figures\Ring.cs" />
+    <Compile Include="Figures\Round.cs" />
+    <Compile Include="Figures\Square.cs" />
+    <Compile Include="Additional Tools\Tools.cs" />
+    <Compile Include="Figures\Triangle.cs" />
+    <Compile Include="Additional Tools\UserActions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

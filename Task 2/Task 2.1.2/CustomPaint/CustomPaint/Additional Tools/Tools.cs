@@ -1,55 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace CustomPaint
+﻿namespace CustomPaint
 {
-    /// <summary>
-    /// Enumeration of all available types of figures.
-    /// </summary>
-    enum FigureTypes 
-    {
-        Circle = 1,
-        Round = 2, 
-        Ring = 3,
-        Rectangle = 4,
-        Square = 5,
-        Triangle = 6
-    }
-
-    /// <summary>
-    /// Enumeration of all actions that available to perform in figure editing menu.
-    /// </summary>
-    enum Actions
-    { 
-        ChooseUser = 0,
-        Show = 1,
-        Add = 2,
-        Remove = 3,
-        Clear = 4
-    }
-
-    /// <summary>
-    /// Enumeration of all actions that available to perform in user editing-choosing menu.
-    /// </summary>
-    enum UserActions
-    {
-        Exit = 0,
-        Show = 1,
-        Add = 2,
-        Remove = 3,
-        Clear = 4,
-        Choose = 5
-    }
+    using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Static class that provides primary functionality.
     /// </summary>
-    static class Tools
+    public static class Tools
     {
+        // Methods
+
         /// <summary>
         /// Method that creates figure by given type
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="type">Type of figure</param>
         /// <returns>Figure of a specified type</returns>
         public static Figure CreateFigure(FigureTypes type)
         {
@@ -66,6 +30,7 @@ namespace CustomPaint
 
                         return new Circle(center, radius);
                     }
+
                 case FigureTypes.Round:
                     {
                         Console.WriteLine("Enter round center coordinates (separated by a space):");
@@ -75,18 +40,19 @@ namespace CustomPaint
 
                         return new Round(center, radius);
                     }
+
                 case FigureTypes.Ring:
                     {
                         Console.WriteLine("Enter ring center coordinates (separated by a space):");
                         Point center = ConsoleExtensions.InputPoint();
                         Console.WriteLine("Enter ring inner radius:");
-                        double inner_radius = ConsoleExtensions.InputDouble(number => number > 0);
+                        double innerRadius = ConsoleExtensions.InputDouble(number => number > 0);
                         Console.WriteLine("Enter ring outer radius:");
-                        double outer_radius = ConsoleExtensions.InputDouble(number => number > 0);
+                        double outerRadius = ConsoleExtensions.InputDouble(number => number > 0);
 
                         try
                         {
-                            return new Ring(center, inner_radius, outer_radius);
+                            return new Ring(center, innerRadius, outerRadius);
                         }
                         catch (ArgumentException ex)
                         {
@@ -94,17 +60,19 @@ namespace CustomPaint
                             return null;
                         }
                     }
+
                 case FigureTypes.Rectangle:
                     {
                         Console.WriteLine("Enter rectangle position (top-left corner) coordinates (separated by a space):");
                         Point position = ConsoleExtensions.InputPoint();
                         Console.WriteLine("Enter rectangle side A:");
-                        LineSegment side_a = new LineSegment(ConsoleExtensions.InputDouble(number => number > 0));
+                        LineSegment sideA = new LineSegment(ConsoleExtensions.InputDouble(number => number > 0));
                         Console.WriteLine("Enter rectangle side B:");
-                        LineSegment side_b = new LineSegment(ConsoleExtensions.InputDouble(number => number > 0));
+                        LineSegment sideB = new LineSegment(ConsoleExtensions.InputDouble(number => number > 0));
 
-                        return new Rectangle(position, side_a, side_b);
+                        return new Rectangle(position, sideA, sideB);
                     }
+
                 case FigureTypes.Square:
                     {
                         Console.WriteLine("Enter square position (top-left corner) coordinates (separated by a space):");
@@ -114,16 +82,17 @@ namespace CustomPaint
 
                         return new Square(position, side);
                     }
+
                 case FigureTypes.Triangle:
                     {
                         Console.WriteLine("Enter triangle verticle A position coordinates (separated by a space):");
-                        Point verticle_a = ConsoleExtensions.InputPoint();
+                        Point verticleA = ConsoleExtensions.InputPoint();
                         Console.WriteLine("Enter triangle verticle B position coordinates (separated by a space):");
-                        Point verticle_b = ConsoleExtensions.InputPoint();
+                        Point verticleB = ConsoleExtensions.InputPoint();
                         Console.WriteLine("Enter triangle verticle C position coordinates (separated by a space):");
-                        Point verticle_c = ConsoleExtensions.InputPoint();
+                        Point verticleC = ConsoleExtensions.InputPoint();
 
-                        return new Triangle(verticle_a, verticle_b, verticle_c);
+                        return new Triangle(verticleA, verticleB, verticleC);
                     }
             }
         }
@@ -135,17 +104,20 @@ namespace CustomPaint
         /// <param name="items">List from System.Collections.Generic</param>
         public static void ShowList<T>(List<T> items)
         {
-            int separator_width = 14;
+            int separatorWidth = 14;
+
             if (items is null || items?.Count == 0)
             {
                 Console.WriteLine("Nothing found.");
                 return;
             }
+
             foreach (var item in items)
             {
                 Console.WriteLine(item);
             }
-            Console.WriteLine(new string('-', separator_width));
+
+            Console.WriteLine(new string('-', separatorWidth));
             Console.WriteLine("TOTAL COUNT: {0}", items.Count);
         }
 
@@ -170,16 +142,19 @@ namespace CustomPaint
                 switch (ConsoleExtensions.InputEnum<UserActions>())
                 {
                     default:
-                        Console.WriteLine("Action with entered number doesn't exist.");
+                        {
+                            Console.WriteLine("Action with entered number doesn't exist.");
+                        }
+
                         break;
                     case UserActions.Exit:
                         return string.Empty;
-                        break;
                     case UserActions.Show:
                         {
                             Console.WriteLine("Users list: ");
                             ShowList(usernames);
                         }
+
                         break;
                     case UserActions.Add:
                         {
@@ -188,6 +163,7 @@ namespace CustomPaint
                             usernames.Add(username);
                             Console.WriteLine("User \"{0}\" added successfully", username);
                         }
+
                         break;
                     case UserActions.Remove:
                         {
@@ -207,6 +183,7 @@ namespace CustomPaint
                                 }
                             }
                         }
+
                         break;
                     case UserActions.Clear:
                         {
@@ -215,18 +192,29 @@ namespace CustomPaint
                                 usernames.Clear();
                             }
                         }
+
                         break;
                     case UserActions.Choose:
                         {
-                            if (usernames.Count == 0) Console.WriteLine("To choose a user, add it to the list first.");
-                            else 
+                            if (usernames.Count == 0)
+                            {
+                                Console.WriteLine("To choose a user, add it to the list first.");
+                            }
+                            else
                             {
                                 Console.WriteLine("Enter a user's name from list: ");
                                 string username = ConsoleExtensions.InputString();
-                                if (usernames.Contains(username)) return username;
-                                else Console.WriteLine("User \"{0}\" not found", username);
+                                if (usernames.Contains(username))
+                                {
+                                    return username;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("User \"{0}\" not found", username);
+                                }
                             }
                         }
+
                         break;
                 }
             }
@@ -252,7 +240,10 @@ namespace CustomPaint
                 switch (ConsoleExtensions.InputEnum<Actions>())
                 {
                     default:
-                        Console.WriteLine("Action with entered number doesn't exist.");
+                        {
+                            Console.WriteLine("Action with entered number doesn't exist.");
+                        }
+                        
                         break;
                     case Actions.ChooseUser:
                         return;
@@ -261,6 +252,7 @@ namespace CustomPaint
                             Console.WriteLine("Figures list: ");
                             ShowList(figures);
                         }
+
                         break;
                     case Actions.Add:
                         {
@@ -285,11 +277,13 @@ namespace CustomPaint
                                 Console.WriteLine("Figure {0} created and added successfully", figure.Type);
                             }
                         }
+
                         break;
                     case Actions.Remove:
                         {
-                            Console.Write("Enter a fidures's ID to remove: ");
+                            Console.Write("Enter a figure's ID to remove: ");
                             int id = ConsoleExtensions.InputInt32();
+
                             if (ConsoleExtensions.RequestConfirmation("Are you sure?"))
                             {
                                 int total_count = figures.Count;
@@ -304,6 +298,7 @@ namespace CustomPaint
                                 }
                             }
                         }
+
                         break;
                     case Actions.Clear:
                         {
@@ -312,120 +307,10 @@ namespace CustomPaint
                                 figures.Clear();
                             }
                         }
+
                         break;
                 }
             }
-        }
-    }
-
-    /// <summary>
-    /// Static class that provides additionals console tools.
-    /// </summary>
-    static class ConsoleExtensions
-    {
-        /// <summary>
-        /// Method that returns user decision of a given question in a logical value.
-        /// </summary>
-        /// <param name="question">Question to ask.</param>
-        /// <returns>Logical value of a decision.</returns>
-        public static bool RequestConfirmation(string question)
-        {
-            Console.Write("{0} > ", question);
-            string line = Console.ReadLine();
-            if (line == string.Empty || line.ToLower() == "y") return true;
-            return false;
-        }
-
-        /// <summary>
-        /// Method that gets user input as a string value.
-        /// </summary>
-        /// <returns>Non-empty and non-whitespace user-entered string.</returns>
-        public static string InputString()
-        {
-            string line;
-            bool correct_input;
-            do
-            {
-                line = Console.ReadLine();
-                correct_input = line != string.Empty && !string.IsNullOrWhiteSpace(line);
-                if (!correct_input) Console.WriteLine("Incorrect input. Please, try again.");
-            } while (!correct_input);
-            return line;
-        }
-
-        /// <summary>
-        /// Method that gets user input as Enumeration value.
-        /// </summary>
-        /// <typeparam name="T">Enum type</typeparam>
-        /// <returns>Enumeration item of type T</returns>
-        public static T InputEnum<T>() where T: struct
-        {
-            string line;
-            T enum_value;
-            bool converted_successfully;
-            do
-            {
-                line = Console.ReadLine();
-                converted_successfully = Enum.TryParse<T>(line, out enum_value);
-                if (!converted_successfully) Console.WriteLine("Incorrect input. Please, try again.");
-            } while (!converted_successfully);
-            return enum_value;
-        }
-
-        /// <summary>
-        /// Method that gets user input as Int32 value.
-        /// </summary>
-        /// <returns>User-entered integer.</returns>
-        public static int InputInt32()
-        {
-            string line;
-            int int32_value;
-            bool converted_successfully;
-            do
-            {
-                line = Console.ReadLine();
-                converted_successfully = int.TryParse(line, out int32_value);
-                if (!converted_successfully) Console.WriteLine("Incorrect input. Please, try again.");
-            } while (!converted_successfully);
-            return int32_value;
-        }
-
-        /// <summary>
-        /// Method that gets user input as Double value, filtered by a given predicate.
-        /// </summary>
-        /// <param name="predicate"></param>
-        /// <returns>User-entered integer that satisfies a given predicate.</returns>
-        public static double InputDouble(Predicate<double> predicate)
-        {
-            string line;
-            double double_value;
-            bool converted_successfully;
-            do
-            {
-                line = Console.ReadLine();
-                converted_successfully = double.TryParse(line, out double_value) && predicate.Invoke(double_value);
-                if (!converted_successfully) Console.WriteLine("Incorrect input. Please, try again.");
-            } while (!converted_successfully);
-            return double_value;
-        }
-
-        /// <summary>
-        /// Method that gets user input as value of Point structure.
-        /// </summary>
-        /// <returns>User-entered Point.</returns>
-        public static Point InputPoint()
-        {
-            string[] line;
-            double[] double_values = new double[2];
-            bool converted_successfully;
-            char[] separators = { ' ' };
-            do
-            {
-                line = Console.ReadLine().Split(separators, 2, StringSplitOptions.RemoveEmptyEntries);
-                converted_successfully = line.Length == 2 && double.TryParse(line[0], out double_values[0]) && double.TryParse(line[1], out double_values[1]);
-                if (!converted_successfully) Console.WriteLine("Incorrect input. Please, try again.");
-            } while (!converted_successfully);
-            return new Point(double_values[0], double_values[1]);
         }
     }
 }

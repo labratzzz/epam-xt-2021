@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace CustomPaint
+﻿namespace CustomPaint
 {
-    class Program
+    using System;
+    using System.Collections.Generic;
+
+    public static class Program
     {
-        static void Main(string[] args)
+        // Entry point
+        public static void Main()
         {
             List<Figure> storage = new List<Figure>();
             List<string> usernames = new List<string>();
@@ -14,11 +15,15 @@ namespace CustomPaint
 
             while (true)
             {
-                Console.WriteLine("{0}Choose a user to continue:", Environment.NewLine);
-                string current_user = Tools.ChooseUser(usernames);
-                if (current_user == string.Empty) break;
+                Console.WriteLine();
+                Console.WriteLine("Choose a user to continue:");
+                string currentUser = Tools.ChooseUser(usernames);
+                if (currentUser == string.Empty)
+                {
+                    break;
+                }
 
-                Tools.ShowPaintMenu(storage, current_user);
+                Tools.ShowPaintMenu(storage, currentUser);
             }
         }
     }

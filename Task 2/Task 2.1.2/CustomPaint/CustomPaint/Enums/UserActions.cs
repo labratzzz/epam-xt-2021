@@ -1,4 +1,4 @@
-﻿namespace CustomPaint
+﻿namespace CustomPaint.Enums
 {
     /// <summary>
     /// Enumeration of all actions that available to perform in user editing-choosing menu.
@@ -6,7 +6,7 @@
     public enum UserActions
     {
         Exit = 0,
-        Show = 1,
+        Show = 1, 
         Add = 2,
         Remove = 3,
         Clear = 4,

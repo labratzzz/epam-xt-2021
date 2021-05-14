@@ -1,7 +1,9 @@
-﻿namespace CustomPaint
+﻿namespace CustomPaint.Utils
 {
     using System;
     using System.Collections.Generic;
+    using CustomPaint.Entities;
+    using CustomPaint.Enums;
 
     /// <summary>
     /// Static class that provides primary functionality.
@@ -98,7 +100,7 @@
         }
 
         /// <summary>
-        /// Method that shows List items in a prespecified format
+        /// Method that shows List items in a pre-specified format
         /// </summary>
         /// <typeparam name="T">Type of list</typeparam>
         /// <param name="items">List from System.Collections.Generic</param>
@@ -124,9 +126,9 @@
         /// <summary>
         /// Method that provides functionality of adding and removing usernames to the given list.
         /// </summary>
-        /// <param name="usernames">List of usernames</param>
+        /// <param name="users">List of usernames</param>
         /// <returns>Empty string if user chose to exit OR Username that user chose.</returns>
-        public static string ChooseUser(List<string> usernames)
+        public static User ChooseUser(List<User> users)
         {
             Console.WriteLine("Available actions:");
             Console.WriteLine("{0} to Show all users", (int)UserActions.Show);
@@ -148,11 +150,11 @@
 
                         break;
                     case UserActions.Exit:
-                        return string.Empty;
+                        return null;
                     case UserActions.Show:
                         {
                             Console.WriteLine("Users list: ");
-                            ShowList(usernames);
+                            ShowList(users);
                         }
 
                         break;
@@ -160,7 +162,7 @@
                         {
                             Console.Write("Enter a new user's name: ");
                             string username = ConsoleExtensions.InputString();
-                            usernames.Add(username);
+                            users.Add(new User(username));
                             Console.WriteLine("User \"{0}\" added successfully", username);
                         }
 
@@ -171,10 +173,11 @@
                             string username = ConsoleExtensions.InputString();
                             if (ConsoleExtensions.RequestConfirmation("Are you sure?"))
                             {
-                                int total_count = usernames.Count;
-                                usernames.Remove(username);
-                                if (total_count > usernames.Count)
+                                int userIndexToRemove = users.FindIndex(u => u.Name == username);
+                                
+                                if (userIndexToRemove != -1)
                                 {
+                                    users.RemoveAt(userIndexToRemove);
                                     Console.WriteLine("User \"{0}\" removed successfully", username);
                                 }
                                 else
@@ -189,14 +192,14 @@
                         {
                             if (ConsoleExtensions.RequestConfirmation("Are you sure?"))
                             {
-                                usernames.Clear();
+                                users.Clear();
                             }
                         }
 
                         break;
                     case UserActions.Choose:
                         {
-                            if (usernames.Count == 0)
+                            if (users.Count == 0)
                             {
                                 Console.WriteLine("To choose a user, add it to the list first.");
                             }
@@ -204,14 +207,13 @@
                             {
                                 Console.WriteLine("Enter a user's name from list: ");
                                 string username = ConsoleExtensions.InputString();
-                                if (usernames.Contains(username))
+                                User user = users.Find(u => u.Name == username);
+                                if (user != null)
                                 {
-                                    return username;
+                                    return user;
                                 }
-                                else
-                                {
-                                    Console.WriteLine("User \"{0}\" not found", username);
-                                }
+
+                                Console.WriteLine("User \"{0}\" not found", username);
                             }
                         }
 
@@ -225,9 +227,9 @@
         /// </summary>
         /// <param name="figures">List of figures</param>
         /// <param name="username">Username to contact with.</param>
-        public static void ShowPaintMenu(List<Figure> figures, string username)
+        public static void ShowPaintMenu(User user)
         {
-            Console.WriteLine("{0}Hello, {1}! Choose from actions below:", Environment.NewLine, username);
+            Console.WriteLine("{0}Hello, {1}! Choose from actions below:", Environment.NewLine, user.Name);
             Console.WriteLine("{0} to Show all figures", (int)Actions.Show);
             Console.WriteLine("{0} to Add a new figure", (int)Actions.Add);
             Console.WriteLine("{0} to Remove figure", (int)Actions.Remove);
@@ -236,7 +238,7 @@
 
             while (true)
             {
-                Console.Write("{0}{1}, please enter action number: ", Environment.NewLine, username);
+                Console.Write("{0}{1}, please enter action number: ", Environment.NewLine, user.Name);
                 switch (ConsoleExtensions.InputEnum<Actions>())
                 {
                     default:
@@ -250,7 +252,7 @@
                     case Actions.Show:
                         {
                             Console.WriteLine("Figures list: ");
-                            ShowList(figures);
+                            ShowList(user.Storage);
                         }
 
                         break;
@@ -273,7 +275,7 @@
                             }
                             else
                             {
-                                figures.Add(figure);
+                                user.Storage.Add(figure);
                                 Console.WriteLine("Figure {0} created and added successfully", figure.Type);
                             }
                         }
@@ -286,9 +288,9 @@
 
                             if (ConsoleExtensions.RequestConfirmation("Are you sure?"))
                             {
-                                int total_count = figures.Count;
-                                figures.RemoveAll(figure => figure.Id == id);
-                                if (total_count > figures.Count)
+                                int total_count = user.Storage.Count;
+                                user.Storage.RemoveAll(figure => figure.Id == id);
+                                if (total_count > user.Storage.Count)
                                 {
                                     Console.WriteLine("Figure with ID {0} removed successfully", id);
                                 }
@@ -304,7 +306,7 @@
                         {
                             if (ConsoleExtensions.RequestConfirmation("Are you sure?"))
                             {
-                                figures.Clear();
+                                user.Storage.Clear();
                             }
                         }
 

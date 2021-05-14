@@ -2,14 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using CustomPaint.Entities;
+    using CustomPaint.Utils;
 
     public static class Program
     {
         // Entry point
         public static void Main()
         {
-            List<Figure> storage = new List<Figure>();
-            List<string> usernames = new List<string>();
+            List<User> users = new List<User>();
 
             Console.WriteLine("EPAM-XT-2021 .NET-WEB - Custom Paint");
 
@@ -17,13 +18,13 @@
             {
                 Console.WriteLine();
                 Console.WriteLine("Choose a user to continue:");
-                string currentUser = Tools.ChooseUser(usernames);
-                if (currentUser == string.Empty)
+                User currentUser = Tools.ChooseUser(users);
+                if (currentUser == null)
                 {
                     break;
                 }
 
-                Tools.ShowPaintMenu(storage, currentUser);
+                Tools.ShowPaintMenu(currentUser);
             }
         }
     }

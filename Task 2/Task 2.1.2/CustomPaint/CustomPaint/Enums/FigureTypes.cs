@@ -1,4 +1,4 @@
-﻿namespace CustomPaint
+﻿namespace CustomPaint.Enums
 {
     /// <summary>
     /// Enumeration of all available types of figures.

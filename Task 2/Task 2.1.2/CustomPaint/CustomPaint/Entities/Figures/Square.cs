@@ -1,4 +1,4 @@
-﻿namespace CustomPaint
+﻿namespace CustomPaint.Entities
 {
     public class Square : Rectangle
     {

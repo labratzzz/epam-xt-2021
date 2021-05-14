@@ -1,4 +1,4 @@
-﻿namespace CustomPaint
+﻿namespace CustomPaint.Enums
 {
     /// <summary>
     /// Enumeration of all actions that available to perform in figure editing menu.

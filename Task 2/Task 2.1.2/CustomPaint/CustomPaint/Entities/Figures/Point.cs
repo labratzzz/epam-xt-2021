@@ -1,4 +1,4 @@
-﻿namespace CustomPaint
+﻿namespace CustomPaint.Entities
 {
     /// <summary>
     /// Structure that represents two-dimensional point.

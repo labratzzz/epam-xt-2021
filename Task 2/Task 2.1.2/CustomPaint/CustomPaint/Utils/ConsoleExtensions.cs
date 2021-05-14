@@ -1,6 +1,7 @@
-﻿namespace CustomPaint
+﻿namespace CustomPaint.Utils
 {
     using System;
+    using CustomPaint.Entities;
 
     /// <summary>
     /// Static class that provides additional console tools.

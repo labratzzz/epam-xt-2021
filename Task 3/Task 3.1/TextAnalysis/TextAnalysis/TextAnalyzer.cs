@@ -4,36 +4,22 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    public enum TextAnalyzerCasing
-    {
-        ToUpper = 0,
-        ToLower = 1,
-        Original = 2
-    }
-
-    public enum TextAnalyzerMode
-    {
-        OnlyLetters = 0,
-        OnlyDigits = 1,
-        LettersOrDigits = 2
-    }
-
     public static class TextAnalyzer
     {
         public static IEnumerable<string> GetWords(this string line, TextAnalyzerMode mode = TextAnalyzerMode.OnlyLetters, TextAnalyzerCasing casing = TextAnalyzerCasing.ToLower)
         {
-            Predicate<char> IsDesired;
+            Predicate<char> isDesired;
             switch (mode)
             {
                 default:
                 case TextAnalyzerMode.OnlyLetters:
-                    IsDesired = ch => char.IsLetter(ch);
+                    isDesired = ch => char.IsLetter(ch);
                     break;
                 case TextAnalyzerMode.OnlyDigits:
-                    IsDesired = ch => char.IsDigit(ch);
+                    isDesired = ch => char.IsDigit(ch);
                     break;
                 case TextAnalyzerMode.LettersOrDigits:
-                    IsDesired = ch => char.IsLetterOrDigit(ch);
+                    isDesired = ch => char.IsLetterOrDigit(ch);
                     break;
             }
             
@@ -41,9 +27,9 @@
             int startIndex = 0;
             bool runningOnDesiredNow = false;
 
-            for (int i = 0; i <= line.Length; i++) // TODO String.Empty returns one word
+            for (int i = 0; i <= line.Length; i++)
             {
-                if (i < line.Length && IsDesired.Invoke(line[i]) )
+                if (i < line.Length && isDesired.Invoke(line[i]))
                 {
                     if (!runningOnDesiredNow)
                     {
@@ -51,7 +37,7 @@
                         runningOnDesiredNow = true;
                     }
                 }
-                else if (i >= line.Length || runningOnDesiredNow)
+                else if (runningOnDesiredNow)
                 {
                     string word = line.Substring(startIndex, i - startIndex);
 
@@ -71,6 +57,10 @@
                     words.Add(word);
 
                     runningOnDesiredNow = false;
+                }
+                else if (i >= line.Length) 
+                {
+                    break;
                 }
             }
 

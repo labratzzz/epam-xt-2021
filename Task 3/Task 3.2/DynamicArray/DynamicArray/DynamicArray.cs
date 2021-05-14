@@ -33,11 +33,18 @@
         }
 
         // Properties
+
+        /// <summary>
+        /// Size of touched elements.
+        /// </summary>
         public int Length
         {
             get => this.size;
         }
 
+        /// <summary>
+        /// Actual collection size.
+        /// </summary>
         public int Capacity
         {
             get => this.items.Length;
@@ -96,10 +103,7 @@
 
         public void Insert(int index, T item)
         {
-            if (this.size == this.items.Count())
-            {
-                this.RecalculateCapacity(this.size + 1);
-            }
+            this.RecalculateCapacity(this.size + 1);
 
             Array.Copy(this.items, index, this.items, index + 1, this.size - index);
             this.items[index] = item;
@@ -111,10 +115,13 @@
         {
             if (index < 0 || index > this.size) throw new ArgumentOutOfRangeException(nameof(index));
 
-            foreach (var item in collection)
-            {
-                this.Insert(index++, item);
-            }
+            int rangeLength = collection.Count();
+            this.RecalculateCapacity(this.size + rangeLength);
+
+            Array.Copy(this.items, index, this.items, index + rangeLength, this.size - index);
+            Array.Copy(collection.ToArray(), 0, this.items, index, rangeLength);
+
+            this.size += rangeLength;
         }
 
         public T Find(Predicate<T> match)
@@ -238,7 +245,12 @@
                 return;
             }
 
-            int newCapacity = (currentCapacity == 0) ? DynamicArray<T>.InitialSize : currentCapacity * 2;
+            int newCapacity = currentCapacity;
+            while (newCapacity < newSize)
+            {
+                newCapacity *= 2;
+            }
+
             this.Capacity = newCapacity;
         }
     }

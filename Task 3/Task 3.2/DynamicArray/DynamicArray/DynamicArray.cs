@@ -5,14 +5,14 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    public class DynamicArray<T> : IEnumerable<T>, IEnumerable, ICloneable
+    public class DynamicArray<T> : IEnumerable<T>, ICloneable
     {
         // Fields
+        protected int size;
+
+        protected T[] items;
+
         private const int InitialSize = 8;
-
-        private int size;
-
-        private T[] items;
 
         // Constructors
         public DynamicArray() : this(InitialSize) { }
@@ -25,17 +25,13 @@
 
         public DynamicArray(IEnumerable<T> collection) : this(collection.Count())
         {
-            this.size = collection.Count();
-            foreach (var item in collection)
-            {
-                this.Add(item);
-            }
+            this.AddRange(collection);
         }
 
         // Properties
 
         /// <summary>
-        /// Size of touched elements.
+        /// Length of interactive elements.
         /// </summary>
         public int Length
         {
@@ -65,7 +61,11 @@
                 }
 
                 T[] newArray = new T[value];
-                int lengthToCopy = (value < currentCapacity) ? value : this.size;
+                int lengthToCopy = this.size;
+                if (value < currentCapacity)
+                {
+                    lengthToCopy = this.size = value;
+                }
 
                 Array.Copy(this.items, 0, newArray, 0, lengthToCopy);
                 this.items = newArray;
@@ -77,12 +77,22 @@
         {
             get 
             {
+                if (index < 0) 
+                {
+                    index = this.size + index;
+                }
+
                 if (index < 0 || index >= this.size) throw new ArgumentOutOfRangeException(nameof(index));
                 return this.items[index];
             }
 
             set
             {
+                if (index < 0)
+                {
+                    index = this.size + index;
+                }
+
                 if (index < 0 || index >= this.size) throw new ArgumentOutOfRangeException(nameof(index));
                 this.items[index] = value;
             }
@@ -144,7 +154,7 @@
         {
             if (startIndex < 0 || startIndex >= this.size) throw new ArgumentOutOfRangeException(nameof(startIndex));
             int endIndex = startIndex + count - 1;
-            if (endIndex < 0 || endIndex >= this.size) throw new ArgumentOutOfRangeException(nameof(endIndex));
+            if (endIndex < 0 || endIndex >= this.size) throw new ArgumentOutOfRangeException(nameof(count));
             if (match == null) throw new ArgumentNullException(nameof(match));
 
             for (int i = startIndex; i < endIndex; i++)
@@ -163,7 +173,7 @@
         {
             if (startIndex < 0 || startIndex >= this.size) throw new ArgumentOutOfRangeException(nameof(startIndex));
             int endIndex = startIndex + count - 1;
-            if (endIndex < 0 || endIndex >= this.size) throw new ArgumentOutOfRangeException(nameof(endIndex));
+            if (endIndex < 0 || endIndex >= this.size) throw new ArgumentOutOfRangeException(nameof(count));
             if (match == null) throw new ArgumentNullException(nameof(match));
 
             for (int i = endIndex; i >= startIndex; i--)
@@ -195,19 +205,20 @@
                 this.RemoveAt(index);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            
+            return false;
         }
 
-        public void RemoveAt(int index)
+        public void RemoveAt(int index) => this.RemoveRange(index, 1);
+
+        public void RemoveRange(int index, int length)
         {
             if (index < 0 || index >= this.size) throw new ArgumentOutOfRangeException(nameof(index));
+            if (length > this.size - index) throw new ArgumentOutOfRangeException(nameof(length));
 
-            Array.Copy(this.items, index + 1, this.items, index, this.size - index);
+            Array.Copy(this.items, index + length, this.items, index, this.size - index - length);
 
-            this.size--;
+            this.size -= length;
         }
 
         public T[] ToArray()
@@ -216,7 +227,7 @@
         }
 
         #region IEnumerable<T> Implementation
-        public IEnumerator<T> GetEnumerator()
+        public virtual IEnumerator<T> GetEnumerator()
         {
             for (int i = 0; i < this.size; i++)
             {

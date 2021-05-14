@@ -1,10 +1,6 @@
 ﻿namespace DemoProgram
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using MyCollections;
 
     public static class Program
@@ -40,18 +36,68 @@
 
             stringArray.Remove("eighth");
             Program.ShowContentsAndInfo(stringArray);
+
+            Console.WriteLine("Last element: stringArray[-1] = " + stringArray[-1]);
+            Console.WriteLine("Getter: stringArray[-2] = " + stringArray[-2]);
+            Console.WriteLine("Setter: stringArray[-2] = \"NEW_VALUE\";");
+            stringArray[-2] = "NEW_VALUE";
+            Console.WriteLine("Getter: stringArray[-2] = " + stringArray[-2]);
+
+            Console.WriteLine();
+            Console.WriteLine("stringArray.Capacity = 8");
+            stringArray.Capacity = 8;
+            Program.ShowContentsAndInfo(stringArray);
+
+            Console.WriteLine("CLONING");
+            var clonedStringArray = stringArray.Clone() as DynamicArray<string>;
+            Console.WriteLine("clonedStringArray");
+            Program.ShowContentsAndInfo(clonedStringArray);
+
+            Console.WriteLine("clonedStringArray.RemoveRange(2, 3);");
+            clonedStringArray.RemoveRange(2, 3);
+            Console.WriteLine("stringArray:");
+            Program.ShowContentsAndInfo(stringArray);
+            Console.WriteLine("clonedStringArray");
+            Program.ShowContentsAndInfo(clonedStringArray);
+
+            Console.WriteLine("TO ARRAY");
+            Console.WriteLine("ordinaryStringArray = stringArray.ToArray();");
+            var ordinaryStringArray = stringArray.ToArray();
+            Program.ShowContentsAndInfo(ordinaryStringArray);
+
+            Console.WriteLine("Press any key to start listing contents of cycled dynamic array");
+            Console.ReadLine();
+            CycledDynamicArray<string> cycledStringArray = new CycledDynamicArray<string>(stringArray);
+            ShowContentsAndInfo(cycledStringArray);
         }
 
         public static void ShowContentsAndInfo<T>(DynamicArray<T> collection)
         {
             int index = 0;
+
             foreach (var item in collection)
             {
                 Console.WriteLine("{0,2} - |{1}|", index, item);
                 index++;
             }
+
             Console.WriteLine("Capacity: {0}", collection.Capacity);
             Console.WriteLine("Length: {0}", collection.Length);
+            Console.WriteLine();
+        }
+
+        public static void ShowContentsAndInfo<T>(T[] array)
+        {
+            int index = 0;
+
+            Console.WriteLine("[");
+            foreach (var item in array)
+            {
+                Console.WriteLine("{0,2} - |{1}|", index, item);
+                index++;
+            }
+
+            Console.WriteLine("] Length: {0}", array.Length);
             Console.WriteLine();
         }
     }

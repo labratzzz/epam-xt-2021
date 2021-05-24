@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicArray", "DynamicArray\DynamicArray.csproj", "{3DAEBB2B-6FF7-4CF1-85F8-DD89B3BBD1CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoProgram", "DemoProgram\DemoProgram.csproj", "{991F85AB-32C3-46FB-A73F-1758C76A7188}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3DAEBB2B-6FF7-4CF1-85F8-DD89B3BBD1CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DAEBB2B-6FF7-4CF1-85F8-DD89B3BBD1CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DAEBB2B-6FF7-4CF1-85F8-DD89B3BBD1CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DAEBB2B-6FF7-4CF1-85F8-DD89B3BBD1CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{991F85AB-32C3-46FB-A73F-1758C76A7188}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{991F85AB-32C3-46FB-A73F-1758C76A7188}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{991F85AB-32C3-46FB-A73F-1758C76A7188}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{991F85AB-32C3-46FB-A73F-1758C76A7188}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {80350BC5-F123-4C17-BEA8-6F3AFB16A221}
+	EndGlobalSection
+EndGlobal

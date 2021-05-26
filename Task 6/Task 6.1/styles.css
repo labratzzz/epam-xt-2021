@@ -1,0 +1,23 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.menu-box {
+    border: 1px solid black;
+    background-color: #f9e497;
+    border-radius: 5%;
+    color: #880000;
+    font-size: 15px;
+    width: 200px;
+    box-shadow: 5px 5px 0 0 #880000;
+    list-style: none;
+    padding: 10px;
+}
+
+ul.menu-box li {
+    margin: 5px 0;
+}

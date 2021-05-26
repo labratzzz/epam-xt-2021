@@ -4,28 +4,58 @@
 
 body {
     background-color: #4e6379;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
 }
 
-.panel
+.panel {
+    width: 611px;
+    padding: 10px 0;
+    box-shadow: 0 10px 50px #000000;
+    border-radius: 5px;
+    border: 2px solid #ededed;
+    background-color: #ffffff;
+}
+
+.panel > .panel-item + .panel-item {
+    border-left: 2px solid #ededed;
+}
 
 .panel-item {
-
+    width: 200px;
+    display: inline-block;
+    padding: 0 10px;
 }
 
-.panel-item {
-    display: block;
+.representation {
+    text-align: center;
+    width: 180px;
 }
 
-.panel-item button {
-    color: #ffffff;
-    background-color: #f56332;;
-}
-
-.title {
+.representation > figcaption {
     color: #f56332;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.representation > img {
+    height: 64px;
+}
+
+.panel-item > button {
+    color: #ffffff;
+    background-color: #f56332;
+    padding: 5px;
+    border: none;
+    border-radius: 3px;
+    display: block;
+    cursor: pointer;
 }
 
 .price {
-
+    text-align: center;
 }
 
+.center {
+    margin: 0 auto;
+}
